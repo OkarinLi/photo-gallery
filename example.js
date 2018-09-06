@@ -1,3 +1,17 @@
+  addLoadEvent(preparegallery);
+  function addLoadEvent(func){
+  	var oldonload = window.onload;
+  	if(typeof window.onload != "function"){
+  		window.onload=func;
+  	}
+  else{
+  	window.onload=function(){
+  		oldonload();
+  		func();
+  	}
+
+  }
+}
   function showPic(whichpic){
     var source=whichpic.getAttribute("href");
     var placeholder=document.getElementById("placeholder");
@@ -6,6 +20,25 @@
     var description = document.getElementById("description");
     description.firstChild.nodeValue = text;
 
+  }
+  function preparegallery(){
+  	if(!document.getElementById){
+  		return false;
+  	}
+  	if(!document.getElementsByTagName){
+  		return false;
+  	}
+  	if(!document.getElementById("imagegallery")){
+  		return false;
+  	}
+  	var gallery = document.getElementById("imagegallery");
+  	var links = gallery.getElementsByTagName("a");
+  	for(var i=0;i<links.length;i++){
+  		links[i].onclick = function(){
+  			showPic(this);
+  			return false;
+  		}
+  	}
   }
 //   function countBodyChildren(){
 //   var body_element = document.getElementsByTagName("body")[0];
