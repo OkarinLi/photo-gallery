@@ -1,4 +1,5 @@
   addLoadEvent(preparegallery);
+  addLoadEvent(prepareplaceholder);
   function addLoadEvent(func){
   	var oldonload = window.onload;
   	if(typeof window.onload != "function"){
@@ -12,14 +13,36 @@
 
   }
 }
+	function insertafter(newElement,targetElement){
+		var parent = targetElement.parentNode;
+		if(parent.lastChild==targetElement){
+			parent.appendChild(newElement,targetElement);
+		}
+		else{
+			parent.insertBefore(newElement,targetElement.nextSibling);
+		}
+
+	}
+
   function showPic(whichpic){
+  	if(!document.getElementById("placeholder")){
+  		return false;
+  	}
     var source=whichpic.getAttribute("href");
     var placeholder=document.getElementById("placeholder");
+    if(placeholder.nodeName!="IMG"){
+    	return false;
+    }
     placeholder.setAttribute("src",source);
-    var text = whichpic.getAttribute("title");
+    
+    if(document.getElementById("description")){
+    	var text = whichpic.getAttribute("title")?whichpic.getAttribute("title"):"";
     var description = document.getElementById("description");
-    description.firstChild.nodeValue = text;
-
+    if(description.firstChild.nodeType==3){
+    	description.firstChild.nodeValue = text;
+	}	
+     }
+     return true;
   }
   function preparegallery(){
   	if(!document.getElementById){
@@ -35,10 +58,25 @@
   	var links = gallery.getElementsByTagName("a");
   	for(var i=0;i<links.length;i++){
   		links[i].onclick = function(){
-  			showPic(this);
-  			return false;
+  			return !showPic(this);
   		}
   	}
+  }
+
+  function prepareplaceholder(){
+  		var placeholder = document.createElement("img");
+  		placeholder.id = "placeholder";
+  		placeholder.src = "placeholder.jpg";
+  		placeholder.alt = "placeholder";
+  		var description = document.createElement("p");
+  		description.id = "description";
+  		var desctext = document.createTextNode("Choose a photo");
+  		description.appendChild(desctext);
+  		var gallery = document.getElementById("imagegallery");
+  		insertafter(placeholder,gallery);
+  		insertafter(description,placeholder);
+
+
   }
 //   function countBodyChildren(){
 //   var body_element = document.getElementsByTagName("body")[0];
